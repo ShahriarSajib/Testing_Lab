@@ -5,6 +5,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
@@ -67,59 +69,111 @@ public class DemoBlazeTest {
     // ================================
     // 3. ADD PRODUCTS TO CART
     // ================================
+    // @Test
+    // @Order(3)
+    // void addProducts() throws InterruptedException {
+
+    // // Helper function
+    // addProductMultipleTimes("Sony vaio i5", 3);
+
+    // addProduct("ASUS Full HD");
+    // addProduct("Apple monitor 24");
+
+    // addProduct("Samsung galaxy s6");
+    // addProduct("Nokia lumia 1520");
+    // addProduct("HTC One M9");
+    // }
+
+    // void addProduct(String name) throws InterruptedException {
+
+    // // ===== OPEN CATEGORY =====
+    // if (name.equalsIgnoreCase("Sony vaio i5")) {
+    // driver.findElement(By.linkText("Laptops")).click();
+    // } else if (name.equalsIgnoreCase("ASUS Full HD") ||
+    // name.equalsIgnoreCase("Apple monitor 24")) {
+    // driver.findElement(By.linkText("Monitors")).click();
+    // } else {
+    // driver.findElement(By.linkText("Phones")).click();
+    // }
+
+    // // ===== WAIT FOR PRODUCTS TO LOAD =====
+    // wait.until(ExpectedConditions.presenceOfElementLocated(By.id("tbodyid")));
+
+    // // Extra wait for AJAX rendering
+    // Thread.sleep(2000);
+
+    // // ===== FIND PRODUCT (robust XPath) =====
+    // By product = By.xpath("//a[normalize-space()='" + name + "']");
+    // wait.until(ExpectedConditions.visibilityOfElementLocated(product));
+
+    // driver.findElement(product).click();
+
+    // // ===== ADD TO CART =====
+    // wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Add to
+    // cart"))).click();
+
+    // wait.until(ExpectedConditions.alertIsPresent()).accept();
+
+    // // ===== BACK TO HOME =====
+    // driver.findElement(By.id("nava")).click();
+
+    // wait.until(ExpectedConditions.presenceOfElementLocated(By.id("tbodyid")));
+    // }
+
+    // void addProductMultipleTimes(String productName, int count) throws
+    // InterruptedException {
+    // for (int i = 0; i < count; i++) {
+    // addProduct(productName);
+    // }
+    // }
+
+    // ================================
+    // 3. ADD PRODUCTS TO CART
+    // ================================
+
     @Test
     @Order(3)
     void addProducts() throws InterruptedException {
 
-        // Helper function
-        addProductMultipleTimes("Sony vaio i5", 3);
+        addProduct("Laptops", "Sony vaio i5");
+        addProduct("Monitors", "ASUS Full HD");
+        addProduct("Monitors", "Apple monitor 24");
 
-        addProduct("ASUS Full HD");
-        addProduct("Apple monitor 24");
-
-        addProduct("Samsung galaxy s6");
-        addProduct("Nokia lumia 1520");
-        addProduct("HTC One M9");
+        addProduct("Phones", "Samsung galaxy s6");
+        addProduct("Phones", "Nokia lumia 1520");
+        addProduct("Phones", "HTC One M9");
     }
 
-    void addProduct(String name) throws InterruptedException {
+    void addProduct(String category, String productName)
+            throws InterruptedException {
 
-        // ===== OPEN CATEGORY =====
-        if (name.equalsIgnoreCase("Sony vaio i5")) {
-            driver.findElement(By.linkText("Laptops")).click();
-        } else if (name.equalsIgnoreCase("ASUS Full HD") || name.equalsIgnoreCase("Apple monitor 24")) {
-            driver.findElement(By.linkText("Monitors")).click();
-        } else {
-            driver.findElement(By.linkText("Phones")).click();
-        }
+        // Open category
+        driver.findElement(By.linkText(category)).click();
 
-        // ===== WAIT FOR PRODUCTS TO LOAD =====
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("tbodyid")));
+        Thread.sleep(3000);
 
-        // Extra wait for AJAX rendering
+        // Open product
+        driver.findElement(
+                By.linkText(productName)).click();
+
         Thread.sleep(2000);
 
-        // ===== FIND PRODUCT (robust XPath) =====
-        By product = By.xpath("//a[normalize-space()='" + name + "']");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(product));
+        // Add to cart
+        driver.findElement(
+                By.linkText("Add to cart")).click();
 
-        driver.findElement(product).click();
+        // Handle alert
+        Alert alert = wait.until(
+                ExpectedConditions.alertIsPresent());
 
-        // ===== ADD TO CART =====
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Add to cart"))).click();
+        alert.accept();
 
-        wait.until(ExpectedConditions.alertIsPresent()).accept();
+        Thread.sleep(1000);
 
-        // ===== BACK TO HOME =====
+        // Go back home
         driver.findElement(By.id("nava")).click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("tbodyid")));
-    }
-
-    void addProductMultipleTimes(String productName, int count) throws InterruptedException {
-        for (int i = 0; i < count; i++) {
-            addProduct(productName);
-        }
+        Thread.sleep(2000);
     }
 
     // ================================
@@ -155,13 +209,79 @@ public class DemoBlazeTest {
         driver.findElement(By.xpath("//button[text()='Purchase']")).click();
 
         WebElement confirmation = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert"))
-        );
+                ExpectedConditions.visibilityOfElementLocated(By.className("sweet-alert")));
 
         System.out.println("Confirmation:\n" + confirmation.getText());
 
         driver.findElement(By.xpath("//button[text()='OK']")).click();
     }
+
+    // ================================
+    // 4. CART & CHECKOUT
+    // ================================
+
+    // @Test
+    // @Order(4)
+    // void cartAndCheckout() throws InterruptedException {
+
+    // // Open cart
+    // driver.findElement(By.id("cartur")).click();
+
+    // Thread.sleep(2000);
+
+    // // Get cart items
+    // List<WebElement> items =
+    // driver.findElements(By.xpath("//tbody/tr"));
+
+    // System.out.println("Total Items: " + items.size());
+
+    // // Verify cart not empty
+    // assertTrue(items.size() > 0);
+
+    // // Click Place Order
+    // driver.findElement(
+    // By.xpath("//button[text()='Place Order']")
+    // ).click();
+
+    // Thread.sleep(2000);
+
+    // // Fill form
+    // driver.findElement(By.id("name"))
+    // .sendKeys("Test User");
+
+    // driver.findElement(By.id("country"))
+    // .sendKeys("Bangladesh");
+
+    // driver.findElement(By.id("city"))
+    // .sendKeys("Sylhet");
+
+    // driver.findElement(By.id("card"))
+    // .sendKeys("123456789");
+
+    // driver.findElement(By.id("month"))
+    // .sendKeys("05");
+
+    // driver.findElement(By.id("year"))
+    // .sendKeys("2026");
+
+    // // Purchase
+    // driver.findElement(
+    // By.xpath("//button[text()='Purchase']")
+    // ).click();
+
+    // Thread.sleep(2000);
+
+    // // Confirmation message
+    // WebElement confirmation =
+    // driver.findElement(By.className("sweet-alert"));
+
+    // System.out.println(confirmation.getText());
+
+    // // Click OK
+    // driver.findElement(
+    // By.xpath("//button[text()='OK']")
+    // ).click();
+    // }
 
     // ================================
     // 5. CONTACT MESSAGE
@@ -170,32 +290,39 @@ public class DemoBlazeTest {
     @Order(5)
     void contactMessage() {
 
+        // Click Contact button
         WebElement contactBtn = wait.until(
-                ExpectedConditions.elementToBeClickable(By.linkText("Contact"))
-        );
+                ExpectedConditions.elementToBeClickable(By.linkText("Contact")));
 
-        // safer click (avoids overlay issue)
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", contactBtn);
+        contactBtn.click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("recipient-email")));
+        // Wait for modal to appear
+        wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("recipient-email")));
 
-        driver.findElement(By.id("recipient-email")).sendKeys("test@mail.com");
-        driver.findElement(By.id("recipient-name")).sendKeys("Tester");
-        driver.findElement(By.id("message-text")).sendKeys("This is a test message.");
+        // Fill form
+        driver.findElement(By.id("recipient-email"))
+                .sendKeys("test@mail.com");
 
-        WebElement sendBtn = driver.findElement(By.xpath("//button[text()='Send message']"));
+        driver.findElement(By.id("recipient-name"))
+                .sendKeys("Tester");
 
-        // FIX 1: scroll into view
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", sendBtn);
+        driver.findElement(By.id("message-text"))
+                .sendKeys("This is a test message.");
 
-        // FIX 2: small wait for animation/layout settle
-        wait.until(ExpectedConditions.elementToBeClickable(sendBtn));
+        // Click Send Message
+        WebElement sendBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.xpath("//button[text()='Send message']")));
 
-        // FIX 3: JS click (bypasses overlay completely)
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", sendBtn);
+        sendBtn.click();
 
-        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        // Handle alert
+        Alert alert = wait.until(
+                ExpectedConditions.alertIsPresent());
+
         System.out.println("Contact Alert: " + alert.getText());
+
         alert.accept();
     }
 
